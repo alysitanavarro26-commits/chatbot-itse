@@ -1,0 +1,7 @@
+transformers
+datasets
+scikit-learn
+vaderSentiment
+text2emotion
+torch
+pandas
