@@ -1,13 +1,23 @@
 import pandas as pd
-import re
+import spacy
+
+nlp = spacy.load("es_core_news_sm")
+
+df = pd.read_csv("dataset.csv")
 
 def limpiar(texto):
     texto = texto.lower()
-    texto = re.sub(r"[^a-záéíóúñü¿?0-9\s]", "", texto)
+    texto = texto.replace("¿", "").replace("?", "")
+    texto = texto.replace("¡", "").replace("!", "")
     return texto
 
-df = pd.read_csv("dataset/dataset.csv")
-df["text"] = df["text"].apply(limpiar)
-df.to_csv("dataset/dataset_limpio.csv", index=False)
+def lematizar(texto):
+    doc = nlp(texto)
+    return " ".join([token.lemma_ for token in doc])
 
-print("Listo: dataset_limpio.csv generado")
+df["texto_limpio"] = df["texto"].apply(limpiar)
+df["texto_lematizado"] = df["texto_limpio"].apply(lematizar)
+
+df.to_csv("dataset_limpio.csv", index=False)
+
+df.head()
